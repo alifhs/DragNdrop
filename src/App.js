@@ -168,7 +168,7 @@ function App() {
 
       setTask(mainClonedTask);
 
-      // setTask([...tasks, ])
+      
     }
     // event.target.appendChild(document.getElementById(data));
   };
