@@ -66,6 +66,7 @@ function App() {
     // console.log(data, "received data");
     // console.log(e.currentTarget.id, "target id")
     if (e.currentTarget.id === draggedId) {
+
     } else {
       // console.log("Different");
       let draggedArrayLevel = draggedId.split(",");
@@ -83,6 +84,15 @@ function App() {
         //remove
         if (i + 1 == draggedArrayLevelLen) {
           removedElement = clonedTask.splice(draggedArrayLevel[i], 1);
+
+          //update other components id too
+          for(let i = 0; i < clonedTask.length; i++){
+            let newIdArr = clonedTask[i].id.split(',');
+            newIdArr.splice(newIdArr.length-1, 1);
+            newIdArr.push(i);
+            clonedTask[i] = {...clonedTask[i], id: newIdArr.toString()}
+          }
+
         } else {
           if (Array.isArray(clonedTask[draggedArrayLevel[i]])) {
             clonedTask[draggedArrayLevel[i]] = [
@@ -134,15 +144,10 @@ function App() {
           let newChildsPrevId = newChild.id;
           console.log(newChild.id, "new childs prev id");
 
-          //  newChild.id = newChild.id +"," +
-          //  newChild.parent = clonedTask[droppedArrayLevel[i]];
-          //  newChild.parent = parent;
-          //  newChild.level = [...newChild.level]
-          //  newChild.level = [...parent.level, parent.child.length]
-          //  newChild.id =  newChild.level.toString();
+        
           newChild.id = parent.id + "," + parent.child.length.toString();
           console.log("id : " , newChild.id );
-          //  clonedTask[droppedArrayLevel[i]].child.push({...removedElement[0]});
+         
           parent.child.push(newChild);
         } else {
           if (Array.isArray(clonedTask[droppedArrayLevel[i]])) {
@@ -173,13 +178,7 @@ function App() {
     // event.target.appendChild(document.getElementById(data));
   };
 
-  // function test(task) {
-  //   let taskChildLen =  0;
-  //   // while(taskChildLen < task.length) {
-  //   //    task.map()
-  //   // }
-
-  // }
+  
   return (
     <div className="">
       <div className="mt-10 text-center">
@@ -196,13 +195,14 @@ function App() {
       <div className="w-32 h-10 border-4 mt-10 rounded-md text-center shadow-sm">
         <p>root</p>
       </div>
+      {/* <div className="mt-10 ml-6 wid"><p>Tasks</p></div> */}
 
       {/* drag part */}
 
       {tasks.map((task, i) => {
         console.log(task.id);
         return (
-          <>
+          <div key={task.id}>
             <div
               className="cursor-move ml-6 mt-2  "
               onDragStart={(e) => {
@@ -212,7 +212,7 @@ function App() {
               onDrop={onDrop}
               draggable
               id={task.id}
-              key={task.id}
+              
             >
               <p className="w-32 h-10 border-4 shadow-sm text-center rounded-md">
                 {task.name}
@@ -240,7 +240,7 @@ function App() {
                   );
                 })
               : null}
-          </>
+          </div>
         );
       })}
     </div>
