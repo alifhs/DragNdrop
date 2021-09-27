@@ -17,6 +17,50 @@ function App() {
 
   console.log("updated tasks", tasks);
 
+
+  const updateNestedComponents = (element) => {
+
+    if(element.child.length > 0) {  //for child updating
+      element.child = [...element.child];
+      let childArray = element.child;
+      let parentIdArr = element.id.split(',');
+      
+      for(let i = 0; i < childArray.length; i++) { // only update , nothing to remove
+        let childIdArr = [...parentIdArr];
+        childIdArr.push(i);
+        
+        childArray[i] = {...childArray[i], id: childIdArr.toString()}  //childArray[i] is an object
+
+        if(childArray[i].child.length > 0) {
+          childArray[i].child = [...childArray[i].child];
+          let grandChildArr = childArray[i].child;
+
+          for(let i = 0 ;i < grandChildArr.length; i++ ) {
+             let grandChildIdArr = [...childIdArr];
+             grandChildIdArr.push(i);
+             grandChildArr[i] = {...grandChildArr[i], id: grandChildIdArr.toString()}
+
+             if(grandChildArr[i].child.length > 0) {
+              grandChildArr[i].child = [...grandChildArr[i].child];
+              let ggChildArr = grandChildArr[i].child;
+              
+              for(let i = 0; i < ggChildArr.length; i++) {
+                let ggChildIdArr = [...grandChildIdArr];
+                ggChildIdArr.push(i);
+
+                ggChildIdArr[i] = {...ggChildArr[i], id: ggChildIdArr.toString()}
+
+              }
+
+          }
+        }
+
+      }
+  }
+  
+}
+  }
+
   // let pp = tasks[0];
 
   // if((tasks.length > 0)  && tasks[0].child.length == 4) {
@@ -44,8 +88,11 @@ function App() {
   //id will contain coma separated string that determines its level
 
   const onAdd = (e) => {
+    if(input === ""){}
+    else {
     setTask([...tasks, createNewObj(input, [tasks.length])]);
     setInput("");
+    }
   };
 
   const onInputChange = (e) => {
@@ -88,11 +135,51 @@ function App() {
           //update other components id too
           for(let i = 0; i < clonedTask.length; i++){
             let newIdArr = clonedTask[i].id.split(',');
-            newIdArr.splice(newIdArr.length-1, 1);
+            newIdArr.splice(newIdArr.length - 1, 1);
             newIdArr.push(i);
             clonedTask[i] = {...clonedTask[i], id: newIdArr.toString()}
-          }
 
+            //end of update of a single element
+            let parentIdArr = [...newIdArr];
+            if(clonedTask[i].child.length > 0) {  //for child updating
+                clonedTask[i].child = [...clonedTask[i].child];
+                let childArray = clonedTask[i].child;
+                
+                for(let i = 0; i < childArray.length; i++) { // only update , nothing to remove
+                  let childIdArr = [...parentIdArr];
+                  childIdArr.push(i);
+                  
+                  childArray[i] = {...childArray[i], id: childIdArr.toString()}  //childArray[i] is an object
+
+                  if(childArray[i].child.length > 0) {
+                    childArray[i].child = [...childArray[i].child];
+                    let grandChildArr = childArray[i].child;
+
+                    for(let i = 0 ;i < grandChildArr.length; i++ ) {
+                       let grandChildIdArr = [...childIdArr];
+                       grandChildIdArr.push(i);
+                       grandChildArr[i] = {...grandChildArr[i], id: grandChildIdArr.toString()}
+
+                       if(grandChildArr[i].child.length > 0) {
+                        grandChildArr[i].child = [...grandChildArr[i].child];
+                        let ggChildArr = grandChildArr[i].child;
+                        
+                        for(let i = 0; i < ggChildArr.length; i++) {
+                          let ggChildIdArr = [...grandChildIdArr];
+                          ggChildIdArr.push(i);
+
+                          ggChildIdArr[i] = {...ggChildArr[i], id: ggChildIdArr.toString()}
+
+                        }
+
+                    }
+                  }
+
+                }
+            }
+            
+          }
+        }
         } else {
           if (Array.isArray(clonedTask[draggedArrayLevel[i]])) {
             clonedTask[draggedArrayLevel[i]] = [
