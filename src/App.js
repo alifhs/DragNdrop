@@ -126,7 +126,7 @@ function App() {
 
       while (i < droppedArrayLevelLen) {
         //append
-        if (i + 1 == droppedArrayLevelLen) {
+        if (i + 1 === droppedArrayLevelLen) {
           // console.log(clonedTask, "cloned task");
           // clonedTask.push({...removedElement[0]});
 
