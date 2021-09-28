@@ -17,49 +17,51 @@ function App() {
 
   console.log("updated tasks", tasks);
 
-
   const updateNestedComponents = (element) => {
-
-    if(element.child.length > 0) {  //for child updating
+    if (element.child.length > 0) {
+      //for child updating
       element.child = [...element.child];
       let childArray = element.child;
-      let parentIdArr = element.id.split(',');
-      
-      for(let i = 0; i < childArray.length; i++) { // only update , nothing to remove
+      let parentIdArr = element.id.split(",");
+
+      for (let i = 0; i < childArray.length; i++) {
+        // only update , nothing to remove
         let childIdArr = [...parentIdArr];
         childIdArr.push(i);
-        
-        childArray[i] = {...childArray[i], id: childIdArr.toString()}  //childArray[i] is an object
 
-        if(childArray[i].child.length > 0) {
+        childArray[i] = { ...childArray[i], id: childIdArr.toString() }; //childArray[i] is an object
+
+        if (childArray[i].child.length > 0) {
           childArray[i].child = [...childArray[i].child];
           let grandChildArr = childArray[i].child;
 
-          for(let i = 0 ;i < grandChildArr.length; i++ ) {
-             let grandChildIdArr = [...childIdArr];
-             grandChildIdArr.push(i);
-             grandChildArr[i] = {...grandChildArr[i], id: grandChildIdArr.toString()}
+          for (let i = 0; i < grandChildArr.length; i++) {
+            let grandChildIdArr = [...childIdArr];
+            grandChildIdArr.push(i);
+            grandChildArr[i] = {
+              ...grandChildArr[i],
+              id: grandChildIdArr.toString(),
+            };
 
-             if(grandChildArr[i].child.length > 0) {
+            if (grandChildArr[i].child.length > 0) {
               grandChildArr[i].child = [...grandChildArr[i].child];
               let ggChildArr = grandChildArr[i].child;
-              
-              for(let i = 0; i < ggChildArr.length; i++) {
+
+              for (let i = 0; i < ggChildArr.length; i++) {
                 let ggChildIdArr = [...grandChildIdArr];
                 ggChildIdArr.push(i);
 
-                ggChildIdArr[i] = {...ggChildArr[i], id: ggChildIdArr.toString()}
-
+                ggChildIdArr[i] = {
+                  ...ggChildArr[i],
+                  id: ggChildIdArr.toString(),
+                };
               }
-
+            }
           }
         }
-
       }
-  }
-  
-}
-  }
+    }
+  };
 
   // let pp = tasks[0];
 
@@ -88,10 +90,10 @@ function App() {
   //id will contain coma separated string that determines its level
 
   const onAdd = (e) => {
-    if(input === ""){}
-    else {
-    setTask([...tasks, createNewObj(input, [tasks.length])]);
-    setInput("");
+    if (input === "") {
+    } else {
+      setTask([...tasks, createNewObj(input, [tasks.length])]);
+      setInput("");
     }
   };
 
@@ -113,7 +115,6 @@ function App() {
     // console.log(data, "received data");
     // console.log(e.currentTarget.id, "target id")
     if (e.currentTarget.id === draggedId) {
-
     } else {
       // console.log("Different");
       let draggedArrayLevel = draggedId.split(",");
@@ -133,53 +134,16 @@ function App() {
           removedElement = clonedTask.splice(draggedArrayLevel[i], 1);
 
           //update other components id too
-          for(let i = 0; i < clonedTask.length; i++){
-            let newIdArr = clonedTask[i].id.split(',');
+          for (let i = 0; i < clonedTask.length; i++) {
+            let newIdArr = clonedTask[i].id.split(",");
             newIdArr.splice(newIdArr.length - 1, 1);
             newIdArr.push(i);
-            clonedTask[i] = {...clonedTask[i], id: newIdArr.toString()}
+            clonedTask[i] = { ...clonedTask[i], id: newIdArr.toString() };
 
             //end of update of a single element
             let parentIdArr = [...newIdArr];
-            if(clonedTask[i].child.length > 0) {  //for child updating
-                clonedTask[i].child = [...clonedTask[i].child];
-                let childArray = clonedTask[i].child;
-                
-                for(let i = 0; i < childArray.length; i++) { // only update , nothing to remove
-                  let childIdArr = [...parentIdArr];
-                  childIdArr.push(i);
-                  
-                  childArray[i] = {...childArray[i], id: childIdArr.toString()}  //childArray[i] is an object
-
-                  if(childArray[i].child.length > 0) {
-                    childArray[i].child = [...childArray[i].child];
-                    let grandChildArr = childArray[i].child;
-
-                    for(let i = 0 ;i < grandChildArr.length; i++ ) {
-                       let grandChildIdArr = [...childIdArr];
-                       grandChildIdArr.push(i);
-                       grandChildArr[i] = {...grandChildArr[i], id: grandChildIdArr.toString()}
-
-                       if(grandChildArr[i].child.length > 0) {
-                        grandChildArr[i].child = [...grandChildArr[i].child];
-                        let ggChildArr = grandChildArr[i].child;
-                        
-                        for(let i = 0; i < ggChildArr.length; i++) {
-                          let ggChildIdArr = [...grandChildIdArr];
-                          ggChildIdArr.push(i);
-
-                          ggChildIdArr[i] = {...ggChildArr[i], id: ggChildIdArr.toString()}
-
-                        }
-
-                    }
-                  }
-
-                }
-            }
-            
+            updateNestedComponents(clonedTask[i]);
           }
-        }
         } else {
           if (Array.isArray(clonedTask[draggedArrayLevel[i]])) {
             clonedTask[draggedArrayLevel[i]] = [
@@ -231,11 +195,11 @@ function App() {
           let newChildsPrevId = newChild.id;
           console.log(newChild.id, "new childs prev id");
 
-        
           newChild.id = parent.id + "," + parent.child.length.toString();
-          console.log("id : " , newChild.id );
-         
+          console.log("id : ", newChild.id);
+
           parent.child.push(newChild);
+          updateNestedComponents(newChild);
         } else {
           if (Array.isArray(clonedTask[droppedArrayLevel[i]])) {
             clonedTask[draggedArrayLevel[i]] = [
@@ -259,13 +223,10 @@ function App() {
       }
 
       setTask(mainClonedTask);
-
-      
     }
     // event.target.appendChild(document.getElementById(data));
   };
 
-  
   return (
     <div className="">
       <div className="mt-10 text-center">
@@ -299,7 +260,6 @@ function App() {
               onDrop={onDrop}
               draggable
               id={task.id}
-              
             >
               <p className="w-32 h-10 border-4 shadow-sm text-center rounded-md">
                 {task.name}
@@ -309,20 +269,67 @@ function App() {
             {task.child.length > 0
               ? task.child.map((ta, i) => {
                   return (
-                    <div
-                      className="cursor-move ml-12 mt-2   "
-                      onDragStart={(e) => {
-                        e.dataTransfer.setData("id", ta.id);
-                      }}
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={onDrop}
-                      draggable
-                      id={ta.id}
-                      key={ta.id}
-                    >
-                      <p className="w-32 h-10 border-4 shadow-sm text-center rounded-md">
-                        {ta.name}
-                      </p>
+                    <div key={ta.id}>
+                      <div
+                        className="cursor-move ml-12 mt-2   "
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData("id", ta.id);
+                        }}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={onDrop}
+                        draggable
+                        id={ta.id}
+                      >
+                        <p className="w-32 h-10 border-4 shadow-sm text-center rounded-md">
+                          {ta.name}
+                        </p>
+                      </div>
+
+                      {ta.child.length > 0
+                        ? ta.child.map((ii, j) => {
+                            return (
+                              <div key={ii.id}>
+                                <div
+                                  className="cursor-move ml-20 mt-2   "
+                                  onDragStart={(e) => {
+                                    e.dataTransfer.setData("id", ii.id);
+                                  }}
+                                  onDragOver={(e) => e.preventDefault()}
+                                  onDrop={onDrop}
+                                  draggable
+                                  id={ii.id}
+                                >
+                                  <p className="w-32 h-10 border-4 shadow-sm text-center rounded-md">
+                                    {ii.name}
+                                  </p>
+                                </div>
+
+                                {
+                                  ii.child.length > 0 ? ii.child.map((kk, k) => {
+                                    return (
+                                      <div key = {kk.id}>
+                                      <div
+                                  className="cursor-move ml-28 mt-2   "
+                                  onDragStart={(e) => {
+                                    e.dataTransfer.setData("id", kk.id);
+                                  }}
+                                  onDragOver={(e) => e.preventDefault()}
+                                  onDrop={onDrop}
+                                  draggable
+                                  id={kk.id}
+                                >
+                                  <p className="w-32 h-10 border-4 shadow-sm text-center rounded-md">
+                                    {kk.name}
+                                  </p>
+                                </div>
+                                      </div>
+                                    )
+                                  }): null
+                                }
+                              </div>
+                            );
+                          })
+                        : null}
                     </div>
                   );
                 })
